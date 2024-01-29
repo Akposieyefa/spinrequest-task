@@ -66,7 +66,7 @@ class TaskService
      */
     public function getSingleTaskService($slug): TaskResource
     {
-        $task = $this->model->whereSlug($slug)->firstOrFail();
+        $task = $this->model->whereSlug($slug)->whereUserId($this->getAuthUser()->id)->firstOrFail();
         return (new TaskResource($task))->additional( [
             'message' => "Task details fetched successfully",
             'success' => true
@@ -80,7 +80,7 @@ class TaskService
      */
     public function updateTaskService($request, $slug): JsonResponse
     {
-        $task = $this->model->whereSlug($slug)->firstOrFail();
+        $task = $this->model->whereSlug($slug)->whereUserId($this->getAuthUser()->id)->firstOrFail();
         try {
             $task->update([
                 'title' => empty($request->title) ? $task->title : $request->title,
@@ -106,7 +106,7 @@ class TaskService
      */
     public function deleteTaskService($slug): JsonResponse
     {
-        $task = $this->model->whereSlug($slug)->firstOrFail();
+        $task = $this->model->whereSlug($slug)->whereUserId($this->getAuthUser()->id)->firstOrFail();
         try {
             $task->delete();
             return response()->json([
